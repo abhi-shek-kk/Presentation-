@@ -338,6 +338,94 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* ─── QUIZ SLIDE ─── */
+    #slide-6 { padding: 56px 48px 72px; overflow-y: auto; }
+    .quiz-wrapper { width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 0; }
+    .quiz-header { margin-bottom: 24px; }
+    .quiz-progress-bar {
+      width: 100%; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.08); margin-top: 14px; overflow: hidden;
+    }
+    .quiz-progress-fill {
+      height: 100%; border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      transition: width 0.4s ease;
+    }
+    .quiz-q-panel { display: none; flex-direction: column; gap: 14px; }
+    .quiz-q-panel.active { display: flex; }
+    .quiz-q-num {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--accent1); letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .quiz-q-text {
+      font-size: clamp(15px, 2vw, 19px); font-weight: 700; line-height: 1.45;
+      color: var(--text-main);
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-opt {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 18px; border-radius: 14px; cursor: pointer;
+      background: var(--glass); border: 1.5px solid var(--glass-border);
+      transition: all 0.22s; position: relative; overflow: hidden;
+    }
+    .quiz-opt:hover:not(.locked) { border-color: rgba(0,212,255,0.45); background: rgba(0,212,255,0.07); transform: translateX(4px); }
+    .quiz-opt.correct  { border-color: rgba(0,255,163,0.6); background: rgba(0,255,163,0.10); }
+    .quiz-opt.wrong    { border-color: rgba(240,80,80,0.55); background: rgba(240,80,80,0.08); }
+    .quiz-opt.locked   { cursor: default; }
+    .opt-letter {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,212,255,0.1); border: 1.5px solid rgba(0,212,255,0.3);
+      color: var(--accent1); margin-top: 1px;
+    }
+    .quiz-opt.correct .opt-letter { background: rgba(0,255,163,0.18); border-color: var(--accent3); color: var(--accent3); }
+    .quiz-opt.wrong   .opt-letter { background: rgba(240,80,80,0.18); border-color: #f05050; color: #f07070; }
+    .opt-body { flex: 1; }
+    .opt-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+    .quiz-opt.correct .opt-text { color: var(--text-main); }
+    .opt-explain {
+      font-size: 12px; color: var(--accent3); margin-top: 6px; line-height: 1.6;
+      display: none;
+    }
+    .quiz-opt.correct .opt-explain { display: block; }
+    .quiz-nav-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 18px;
+    }
+    .quiz-next-btn {
+      padding: 10px 26px; border-radius: 60px; cursor: pointer;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none; color: #fff; font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.04em;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s, transform 0.2s;
+    }
+    .quiz-next-btn.visible { opacity: 1; pointer-events: all; }
+    .quiz-next-btn:hover { transform: translateY(-2px); }
+    .quiz-score-panel {
+      display: none; flex-direction: column; align-items: center;
+      gap: 18px; text-align: center; padding: 40px 20px;
+    }
+    .quiz-score-panel.show { display: flex; }
+    .score-ring {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 4px solid var(--accent1);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 0 40px rgba(0,212,255,0.25);
+    }
+    .score-num { font-size: 36px; font-weight: 900; color: var(--accent1); }
+    .score-denom { font-size: 14px; color: var(--text-muted); }
+    .score-msg { font-size: 20px; font-weight: 700; }
+    .score-sub { font-size: 14px; color: var(--text-muted); max-width: 440px; line-height: 1.7; }
+    .quiz-retry-btn {
+      padding: 10px 28px; border-radius: 60px; cursor: pointer;
+      background: transparent; border: 1.5px solid var(--accent1);
+      color: var(--accent1); font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 600; transition: all 0.2s;
+    }
+    .quiz-retry-btn:hover { background: rgba(0,212,255,0.1); }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       .s2-grid, .s4-layout, .s5-layout { grid-template-columns: 1fr; }
@@ -710,16 +798,260 @@
     </div>
   </div>
 
+  <!-- ══════════════════ SLIDE 6 — QUIZ ══════════════════ -->
+  <div class="slide" id="slide-6">
+    <div class="section-num">06</div>
+    <div class="section-label">Knowledge Check</div>
+    <div class="quiz-wrapper anim-1">
+
+      <!-- Header -->
+      <div class="quiz-header">
+        <span class="badge badge-cyan" style="margin-bottom:12px">🧠 Quiz — Test Your Knowledge</span>
+        <h2 class="slide-heading" style="font-size:clamp(26px,3vw,40px)">Pax Silica <em>Challenge</em></h2>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qz-fill" style="width:0%"></div></div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="quiz-q-panel active" id="qp-0">
+        <div class="quiz-q-num">Question 1 of 7</div>
+        <div class="quiz-q-text">When and where was the Pax Silica Initiative formally launched?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,0,2)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body"><div class="opt-text">July 2025 at the G7 Summit in Tokyo</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,0,2)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body"><div class="opt-text">September 2025 during the UN General Assembly in New York</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,0,2)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body">
+              <div class="opt-text">December 2025 at the inaugural Pax Silica Summit in Washington, D.C.</div>
+              <div class="opt-explain">✅ Correct! The initiative was formally launched on December 12, 2025, convened by U.S. officials like Under Secretary Jacob Helberg.</div>
+            </div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,0,2)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body"><div class="opt-text">January 2026 at the World Economic Forum in Davos</div></div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-0" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-0" onclick="nextQ(0)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-q-panel" id="qp-1">
+        <div class="quiz-q-num">Question 2 of 7</div>
+        <div class="quiz-q-text">What does the name "Pax Silica" literally translate to?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,1,0)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body">
+              <div class="opt-text">Peace through Silicon</div>
+              <div class="opt-explain">✅ Correct! "Pax" is Latin for peace and "Silica" refers to silicon dioxide — the raw substrate of every semiconductor chip.</div>
+            </div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,1,0)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body"><div class="opt-text">Silicon Shield</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,1,0)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body"><div class="opt-text">Secure Digital Alliance</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,1,0)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body"><div class="opt-text">Pacific Silicon Accord</div></div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-1" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-1" onclick="nextQ(1)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="quiz-q-panel" id="qp-2">
+        <div class="quiz-q-num">Question 3 of 7</div>
+        <div class="quiz-q-text">What is the primary strategic objective of the Pax Silica Initiative?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,2,3)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body"><div class="opt-text">To establish a single unified global currency pegged to silicon production</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,2,3)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body"><div class="opt-text">To completely phase out the use of silicon in favor of quantum computing hardware</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,2,3)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body"><div class="opt-text">To nationalize all major semiconductor fabrication plants across Western nations</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,2,3)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body">
+              <div class="opt-text">To secure technology supply chains and reduce coercive overdependence on China</div>
+              <div class="opt-explain">✅ Correct! The framework aims to counter vulnerabilities and economic coercion related to concentrated, China-dominated supply chains for chips, rare earths, and AI infrastructure.</div>
+            </div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-2" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-2" onclick="nextQ(2)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="quiz-q-panel" id="qp-3">
+        <div class="quiz-q-num">Question 4 of 7</div>
+        <div class="quiz-q-text">Which nations comprised the core group of founding signatories of the Pax Silica Declaration in December 2025?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,3,1)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body"><div class="opt-text">India, Brazil, South Africa, and Argentina</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,3,1)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body">
+              <div class="opt-text">The U.S., Japan, South Korea, Singapore, Netherlands, UK, Israel, UAE, and Australia</div>
+              <div class="opt-explain">✅ Correct! These 9 high-technology economies formed the initial core network spanning North America, Europe, Asia, and the Middle East.</div>
+            </div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,3,1)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body"><div class="opt-text">Taiwan, China, Russia, and Belarus</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,3,1)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body"><div class="opt-text">France, Germany, Italy, and Spain exclusively</div></div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-3" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-3" onclick="nextQ(3)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="quiz-q-panel" id="qp-4">
+        <div class="quiz-q-num">Question 5 of 7</div>
+        <div class="quiz-q-text">When and at what major event did India formally formalize its adhesion to the Pax Silica coalition?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,4,0)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body">
+              <div class="opt-text">Early 2026 at the India AI Impact Summit</div>
+              <div class="opt-explain">✅ Correct! India officially signed the declaration during the India AI Impact Summit in February 2026, aligning with missions like the India Semiconductor Mission.</div>
+            </div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,4,0)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body"><div class="opt-text">Late 2025 during bilateral trade negotiations in Geneva</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,4,0)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body"><div class="opt-text">Mid-2025 at the G20 Leaders' Summit</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,4,0)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body"><div class="opt-text">It has chosen to remain a permanent non-signatory observer</div></div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-4" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-4" onclick="nextQ(4)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="quiz-q-panel" id="qp-5">
+        <div class="quiz-q-num">Question 6 of 7</div>
+        <div class="quiz-q-text">Which country is home to ASML — the world's dominant producer of lithography machines critical to chip manufacturing — and is a founding Pax Silica member?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,5,1)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body"><div class="opt-text">Germany</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,5,1)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body">
+              <div class="opt-text">Netherlands</div>
+              <div class="opt-explain">✅ Correct! ASML, headquartered in Eindhoven, Netherlands, holds a near-monopoly on EUV lithography machines — making the Netherlands an indispensable member of the coalition.</div>
+            </div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,5,1)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body"><div class="opt-text">Sweden</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,5,1)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body"><div class="opt-text">France</div></div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-5" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-5" onclick="nextQ(5)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="quiz-q-panel" id="qp-6">
+        <div class="quiz-q-num">Question 7 of 7</div>
+        <div class="quiz-q-text">What bilateral agreement did India and the United States sign alongside India's accession to Pax Silica?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="pickOpt(this,6,2)">
+            <div class="opt-letter">A</div>
+            <div class="opt-body"><div class="opt-text">The India-U.S. Rare Minerals Extraction Treaty</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,6,2)">
+            <div class="opt-letter">B</div>
+            <div class="opt-body"><div class="opt-text">The Strategic Semiconductor Manufacturing Pact</div></div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,6,2)">
+            <div class="opt-letter">C</div>
+            <div class="opt-body">
+              <div class="opt-text">Joint Statement on the "India-U.S. AI Opportunity Partnership"</div>
+              <div class="opt-explain">✅ Correct! This bilateral addendum cemented AI co-development, compute access, and talent exchange between India and the United States.</div>
+            </div>
+          </div>
+          <div class="quiz-opt" onclick="pickOpt(this,6,2)">
+            <div class="opt-letter">D</div>
+            <div class="opt-body"><div class="opt-text">The New Delhi Defense and Technology Accord</div></div>
+          </div>
+        </div>
+        <div class="quiz-nav-row">
+          <span class="quiz-q-num" id="qz-status-6" style="color:var(--text-muted)"></span>
+          <button class="quiz-next-btn" id="qz-next-6" onclick="finishQuiz()">Finish Quiz 🎉</button>
+        </div>
+      </div>
+
+      <!-- Score Panel -->
+      <div class="quiz-score-panel" id="qz-score">
+        <div class="score-ring">
+          <div class="score-num" id="sc-num">0</div>
+          <div class="score-denom">/ 7</div>
+        </div>
+        <div class="score-msg" id="sc-msg">Well done!</div>
+        <div class="score-sub" id="sc-sub">You completed the Pax Silica knowledge check.</div>
+        <button class="quiz-retry-btn" onclick="retryQuiz()">↺ Retry Quiz</button>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <nav id="nav">
   <button class="nav-btn" id="btn-prev" onclick="goSlide(-1)" aria-label="Previous slide">&#8592;</button>
   <div class="slide-dots" id="dots"></div>
-  <span id="slide-counter">1 / 5</span>
+  <span id="slide-counter">1 / 6</span>
   <button class="nav-btn" id="btn-next" onclick="goSlide(1)" aria-label="Next slide">&#8594;</button>
 </nav>
 
-<div id="kbd-hint">&#8592; &#8594; Arrow keys to navigate</div>
+<div id="kbd-hint">&#8592; &#8594; Arrow keys &nbsp;|&nbsp; Slide 6 = Quiz</div>
 
 <script>
   let current = 0;
@@ -762,6 +1094,78 @@
   });
 
   btnPrev.disabled = true;
+
+  /* ─── QUIZ LOGIC ─── */
+  const TOTAL_Q = 7;
+  let qzScore = 0;
+  const qzAnswered = new Array(TOTAL_Q).fill(false);
+
+  function pickOpt(el, qIdx, correctIdx) {
+    if (qzAnswered[qIdx]) return;
+    qzAnswered[qIdx] = true;
+
+    const panel = document.getElementById('qp-' + qIdx);
+    const opts  = panel.querySelectorAll('.quiz-opt');
+    const chosen = Array.from(opts).indexOf(el);
+
+    opts.forEach((o, i) => {
+      o.classList.add('locked');
+      if (i === correctIdx) o.classList.add('correct');
+      else if (i === chosen && chosen !== correctIdx) o.classList.add('wrong');
+    });
+
+    const isCorrect = chosen === correctIdx;
+    if (isCorrect) qzScore++;
+
+    const status = document.getElementById('qz-status-' + qIdx);
+    status.textContent = isCorrect ? '✅ Correct!' : '❌ Incorrect';
+    status.style.color = isCorrect ? 'var(--accent3)' : '#f07070';
+
+    const nextBtn = document.getElementById('qz-next-' + qIdx);
+    nextBtn.classList.add('visible');
+
+    // Update progress bar
+    const answered = qzAnswered.filter(Boolean).length;
+    document.getElementById('qz-fill').style.width = (answered / TOTAL_Q * 100) + '%';
+  }
+
+  function nextQ(qIdx) {
+    document.getElementById('qp-' + qIdx).classList.remove('active');
+    const next = document.getElementById('qp-' + (qIdx + 1));
+    if (next) next.classList.add('active');
+  }
+
+  function finishQuiz() {
+    document.getElementById('qp-6').classList.remove('active');
+    const scorePanel = document.getElementById('qz-score');
+    scorePanel.classList.add('show');
+    document.getElementById('sc-num').textContent = qzScore;
+    const pct = qzScore / TOTAL_Q;
+    let msg, sub;
+    if (pct === 1)      { msg = '🏆 Perfect Score!'; sub = 'Exceptional! You mastered every aspect of the Pax Silica initiative.'; }
+    else if (pct >= 0.7){ msg = '🎉 Great Job!'; sub = 'Strong understanding of Pax Silica. Review the slides to perfect the remaining answers.'; }
+    else if (pct >= 0.4){ msg = '📚 Good Effort!'; sub = 'You have a foundation — revisit the presentation slides to strengthen your knowledge.'; }
+    else                { msg = '🔄 Keep Learning!'; sub = 'Go back through the slides and try again — you will improve quickly!'; }
+    document.getElementById('sc-msg').textContent = msg;
+    document.getElementById('sc-sub').textContent = sub;
+  }
+
+  function retryQuiz() {
+    qzScore = 0;
+    qzAnswered.fill(false);
+    document.getElementById('qz-fill').style.width = '0%';
+    document.getElementById('qz-score').classList.remove('show');
+    // Reset all panels
+    for (let i = 0; i < TOTAL_Q; i++) {
+      const panel = document.getElementById('qp-' + i);
+      panel.classList.remove('active');
+      panel.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('correct','wrong','locked'));
+      const status = document.getElementById('qz-status-' + i);
+      status.textContent = '';
+      document.getElementById('qz-next-' + i).classList.remove('visible');
+    }
+    document.getElementById('qp-0').classList.add('active');
+  }
 </script>
 </body>
 </html>
